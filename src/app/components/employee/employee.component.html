@@ -1,0 +1,96 @@
+<div>
+  <p class="page-title">Employee Management</p>
+  <p class="page-subtitle">Create and manage employee records</p>
+
+  <div class="page-card">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;color:#1e293b;">Add New Employee</h3>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+    <form (ngSubmit)="onSubmit()" #employeeForm="ngForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" name="name" [(ngModel)]="newEmployee.name" required class="form-control" placeholder="Enter full name" />
+        </div>
+        <div class="form-group">
+          <label>Username *</label>
+          <input type="text" name="username" [(ngModel)]="newEmployee.username" required class="form-control" placeholder="Unique username" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Password *</label>
+          <input type="password" name="password" [(ngModel)]="newEmployee.password" required class="form-control" placeholder="Password" />
+        </div>
+        <div class="form-group">
+          <label>Work Type *</label>
+          <select name="role" [(ngModel)]="newEmployee.role" required class="form-control">
+            <option *ngFor="let r of employeeRoles" [value]="r">{{ r }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Salary Type *</label>
+          <select name="salaryType" [(ngModel)]="newEmployee.salaryType" required class="form-control">
+            <option *ngFor="let t of salaryTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Salary Amount *</label>
+          <input type="number" name="salaryAmount" [(ngModel)]="newEmployee.salaryAmount" required min="1" class="form-control" placeholder="Amount" />
+        </div>
+      </div>
+      <div class="form-group" style="max-width:240px;">
+        <label>System Role *</label>
+        <select name="systemRole" [(ngModel)]="newEmployee.systemRole" required class="form-control">
+          <option *ngFor="let r of systemRoles" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button type="submit" class="btn btn-primary" [disabled]="!employeeForm.form.valid || isSubmitting">
+          {{ isSubmitting ? 'Creating...' : 'Create Employee' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="page-card">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;color:#1e293b;">
+      All Employees
+      <span style="color:#94a3b8;font-weight:400;font-size:13px;">({{ (employees$ | async)?.length || 0 }})</span>
+    </h3>
+
+    <div class="no-data" *ngIf="isLoading">Loading employees...</div>
+
+    <ng-container *ngIf="!isLoading">
+      <div class="no-data" *ngIf="(employees$ | async)?.length === 0">No employees found.</div>
+
+      <table class="data-table" *ngIf="(employees$ | async)?.length! > 0">
+        <thead>
+          <tr>
+            <th>Name</th><th>Username</th><th>Work Type</th>
+            <th>Salary Type</th><th>Salary Amount</th><th>System Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of (employees$ | async)">
+            <td><strong>{{ emp.name }}</strong></td>
+            <td style="color:#64748b;">{{ emp.username }}</td>
+            <td>{{ emp.role }}</td>
+            <td>{{ emp.salaryType }}</td>
+            <td>₹{{ emp.salaryAmount | number:'1.2-2' }}</td>
+            <td>
+              <span class="badge"
+                [class.badge-admin]="emp.systemRole === 'ADMIN'"
+                [class.badge-employee]="emp.systemRole === 'EMPLOYEE'">
+                {{ emp.systemRole }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+  </div>
+</div>
