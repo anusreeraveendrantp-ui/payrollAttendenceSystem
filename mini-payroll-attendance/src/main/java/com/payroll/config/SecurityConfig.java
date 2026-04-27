@@ -43,9 +43,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-            "http://localhost:4200",
-            "http://localhost:3000"
-        ));
+    "http://localhost:4200",
+    "http://localhost:3000",
+    "https://payroll-frontend-tau.vercel.app",
+    "https://payroll-frontend-ecmotf9ee-anusree-raveendran-t-ps-projects.vercel.app"
+));
+
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         config.setAllowCredentials(true);
